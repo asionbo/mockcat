@@ -96,10 +96,10 @@ export default function Home() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Database className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold">{t("title")}</h1>
+            <h1 className="text-2xl font-bold text-primary">{t("title")}</h1>
           </div>
           <div className="flex items-center gap-4">
-            <p className="text-sm text-muted-foreground">{t("poweredBy")}</p>
+            <p className="text-sm text-muted-foreground hidden sm:block">{t("poweredBy")}</p>
             <LanguageSelector />
           </div>
         </div>
@@ -107,26 +107,26 @@ export default function Home() {
 
       <main className="container mx-auto py-6">
         <div className="grid gap-6 md:grid-cols-2">
-          <Card className="md:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-xl">{t("title")}</CardTitle>
+          <Card className="md:col-span-2 border-2 shadow-lg">
+            <CardHeader className="bg-muted/30">
+              <CardTitle className="text-xl text-primary">{t("title")}</CardTitle>
               <CardDescription>
                 {t("description")}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <div className="grid gap-6">
                 <RadioGroup
                   defaultValue="simple"
                   value={inputFormat}
                   onValueChange={setInputFormat}
-                  className="grid grid-cols-2 gap-4"
+                  className="grid grid-cols-2 gap-4 sm:max-w-sm mx-auto"
                 >
                   <div>
                     <RadioGroupItem value="simple" id="simple" className="peer sr-only" />
                     <Label
                       htmlFor="simple"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary transition-all"
                     >
                       <FileText className="mb-3 h-6 w-6" />
                       <span className="text-sm font-medium">{t("simpleFormat")}</span>
@@ -136,7 +136,7 @@ export default function Home() {
                     <RadioGroupItem value="sql" id="sql" className="peer sr-only" />
                     <Label
                       htmlFor="sql"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary transition-all"
                     >
                       <KeyRound className="mb-3 h-6 w-6" />
                       <span className="text-sm font-medium">{t("sqlFormat")}</span>
@@ -145,7 +145,7 @@ export default function Home() {
                 </RadioGroup>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="tableStructure">{t("tableStructure")}</Label>
+                  <Label htmlFor="tableStructure" className="text-sm font-medium">{t("tableStructure")}</Label>
                   <Textarea
                     id="tableStructure"
                     placeholder={
@@ -153,18 +153,18 @@ export default function Home() {
                         ? t("inputPlaceholderSimple")
                         : t("inputPlaceholderSQL")
                     }
-                    className="min-h-[200px] font-mono text-sm"
+                    className="min-h-[200px] font-mono text-sm border-2 focus-visible:ring-primary"
                     value={tableStructure}
                     onChange={(e) => setTableStructure(e.target.value)}
                   />
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground italic">
                     {inputFormat === "simple"
                       ? t("formatHintSimple")
                       : t("formatHintSQL")}
                   </p>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="recordCount">{t("recordCount")}</Label>
+                  <Label htmlFor="recordCount" className="text-sm font-medium">{t("recordCount")}</Label>
                   <Input
                     id="recordCount"
                     type="number"
@@ -172,12 +172,18 @@ export default function Home() {
                     max="100"
                     value={recordCount}
                     onChange={(e) => setRecordCount(Number.parseInt(e.target.value))}
+                    className="max-w-[200px] border-2 focus-visible:ring-primary"
                   />
                 </div>
               </div>
             </CardContent>
-            <CardFooter>
-              <Button onClick={generateMockData} disabled={isLoading} className="w-full">
+            <CardFooter className="bg-muted/30">
+              <Button 
+                onClick={generateMockData} 
+                disabled={isLoading} 
+                className="w-full md:w-auto md:px-8 transition-all shadow hover:shadow-md"
+                size="lg"
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -191,25 +197,25 @@ export default function Home() {
           </Card>
 
           {mockData && (
-            <Card className="md:col-span-2">
-              <CardHeader className="flex flex-row items-center justify-between">
+            <Card className="md:col-span-2 border-2 shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between bg-muted/30">
                 <div>
-                  <CardTitle className="text-xl">{t("generatedDataTitle")}</CardTitle>
+                  <CardTitle className="text-xl text-primary">{t("generatedDataTitle")}</CardTitle>
                   <CardDescription>{t("generatedDataDesc")}</CardDescription>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 <Tabs defaultValue="json">
-                  <TabsList className="mb-4">
-                    <TabsTrigger value="json" className="flex items-center gap-1">
+                  <TabsList className="mb-4 p-1">
+                    <TabsTrigger value="json" className="flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                       <Code className="h-4 w-4" />
                       JSON
                     </TabsTrigger>
-                    <TabsTrigger value="table" className="flex items-center gap-1">
+                    <TabsTrigger value="table" className="flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                       <Table2 className="h-4 w-4" />
                       Table
                     </TabsTrigger>
-                    <TabsTrigger value="sql" className="flex items-center gap-1">
+                    <TabsTrigger value="sql" className="flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                       <Database className="h-4 w-4" />
                       SQL INSERT
                     </TabsTrigger>
@@ -219,24 +225,28 @@ export default function Home() {
                       <Button 
                         variant="outline" 
                         size="icon" 
-                        className="absolute top-2 right-2 z-10" 
+                        className="absolute top-2 right-2 z-10 bg-muted/80 hover:bg-accent transition-colors border-2" 
                         onClick={() => copyToClipboard(mockData)}
                       >
-                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                       </Button>
-                      <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm">
+                      <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm border-2">
                         {mockData}
                       </pre>
                     </div>
                   </TabsContent>
                   <TabsContent value="table">
-                    <div className="overflow-auto max-h-[500px]">
+                    <div className="overflow-auto max-h-[500px] border-2 rounded-md">
                       <JsonTable data={mockData} />
                     </div>
                   </TabsContent>
                   <TabsContent value="sql">
-                    <div className="overflow-auto max-h-[500px]">
-                      <SqlInsertStatements data={mockData} onCopy={copySqlToClipboard} copied={sqlCopied} />
+                    <div className="relative overflow-hidden rounded-md border-2">
+                      <SqlInsertStatements 
+                        data={mockData} 
+                        onCopy={copySqlToClipboard} 
+                        copied={sqlCopied} 
+                      />
                     </div>
                   </TabsContent>
                 </Tabs>
@@ -246,17 +256,17 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="container mx-auto py-6 border-t">
+      <footer className="container mx-auto py-6 border-t mt-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">{t("footer")}</p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
+            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {t("about")}
             </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
+            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {t("documentation")}
             </a>
-            <a href="https://github.com/asionbo/mockcat" className="text-sm text-muted-foreground hover:text-foreground">
+            <a href="https://github.com/asionbo/mockcat" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {t("github")}
             </a>
           </div>
@@ -278,18 +288,18 @@ function JsonTable({ data }: JsonTableProps) {
   try {
     const jsonData = typeof data === "string" ? JSON.parse(data) : data
     if (!Array.isArray(jsonData) || jsonData.length === 0) {
-      return <p>{t("noData")}</p>
+      return <p className="p-4 text-center text-muted-foreground">{t("noData")}</p>
     }
 
     const columns = Object.keys(jsonData[0])
 
     return (
-      <div className="rounded-md border">
+      <div className="overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b bg-muted/50">
+            <tr className="border-b bg-muted/70">
               {columns.map((column) => (
-                <th key={column} className="p-2 text-left font-medium">
+                <th key={column} className="p-2 text-left font-medium text-sm">
                   {column}
                 </th>
               ))}
@@ -297,7 +307,12 @@ function JsonTable({ data }: JsonTableProps) {
           </thead>
           <tbody>
             {jsonData.map((row, i) => (
-              <tr key={i} className={i % 2 === 0 ? "bg-white dark:bg-gray-950" : "bg-muted/50"}>
+              <tr 
+                key={i} 
+                className={`border-b last:border-0 hover:bg-muted/30 transition-colors ${
+                  i % 2 === 0 ? "bg-white dark:bg-gray-950" : "bg-muted/20"
+                }`}
+              >
                 {columns.map((column) => (
                   <td key={`${i}-${column}`} className="p-2 text-sm">
                     {typeof row[column] === "object" ? JSON.stringify(row[column]) : String(row[column])}
@@ -310,7 +325,7 @@ function JsonTable({ data }: JsonTableProps) {
       </div>
     )
   } catch (error) {
-    return <p>{t("errorDisplayTable")} {error instanceof Error ? error.message : String(error)}</p>
+    return <p className="p-4 text-center text-destructive">{t("errorDisplayTable")} {error instanceof Error ? error.message : String(error)}</p>
   }
 }
 
@@ -327,7 +342,7 @@ function SqlInsertStatements({ data, onCopy, copied }: SqlInsertStatementsProps)
   try {
     const jsonData = typeof data === "string" ? JSON.parse(data) : data
     if (!Array.isArray(jsonData) || jsonData.length === 0) {
-      return <p>{t("noData")}</p>
+      return <p className="p-4 text-center text-muted-foreground">{t("noData")}</p>
     }
 
     // Extract table name from the structure or use a default
@@ -345,25 +360,29 @@ function SqlInsertStatements({ data, onCopy, copied }: SqlInsertStatementsProps)
       return `INSERT INTO ${tableName} (${columns}) VALUES (${values});`
     }).join('\n')
 
+    // Highlight SQL keywords with colored spans
+    const formattedSql = sqlStatements.replace(
+      /(INSERT INTO|VALUES)/g,
+      '<span class="text-primary font-bold">$1</span>'
+    );
+
     return (
       <div className="relative">
-        {onCopy && (
-          <Button 
-            variant="outline" 
-            size="icon" 
-            className="absolute top-2 right-2 z-10" 
-            onClick={() => onCopy(sqlStatements)}
-          >
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-          </Button>
-        )}
-        <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm">
-          {sqlStatements}
-        </pre>
+        <Button 
+          variant="outline" 
+          size="icon" 
+          className="absolute top-2 right-2 z-10 bg-muted/80 hover:bg-accent transition-colors border-2 shadow-sm" 
+          onClick={() => onCopy && onCopy(sqlStatements)}
+        >
+          {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+        </Button>
+        <div className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm font-mono border-0">
+          <div dangerouslySetInnerHTML={{ __html: formattedSql }} />
+        </div>
       </div>
-    )
+    );
   } catch (error) {
-    return <p>{t("errorSqlGeneration")} {error instanceof Error ? error.message : String(error)}</p>
+    return <p className="p-4 text-center text-destructive">{t("errorSqlGeneration")} {error instanceof Error ? error.message : String(error)}</p>
   }
 }
 
