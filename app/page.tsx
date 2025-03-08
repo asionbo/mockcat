@@ -58,7 +58,7 @@ export default function Home() {
     } catch (error) {
       toast({
         title: "Error",
-        description: error.message || "Failed to generate mock data",
+        description: error instanceof Error ? error.message : "Failed to generate mock data",
         variant: "destructive",
       })
     } finally {
@@ -221,7 +221,7 @@ export default function Home() {
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
               Documentation
             </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
+            <a href="https://github.com/asionbo/mockcat" className="text-sm text-muted-foreground hover:text-foreground">
               GitHub
             </a>
           </div>
@@ -232,7 +232,12 @@ export default function Home() {
   )
 }
 
-function JsonTable({ data }) {
+// Define an interface for the JsonTable props
+interface JsonTableProps {
+  data: string | unknown;
+}
+
+function JsonTable({ data }: JsonTableProps) {
   try {
     const jsonData = typeof data === "string" ? JSON.parse(data) : data
     if (!Array.isArray(jsonData) || jsonData.length === 0) {
@@ -268,7 +273,7 @@ function JsonTable({ data }) {
       </div>
     )
   } catch (error) {
-    return <p>Error displaying table: {error.message}</p>
+    return <p>Error displaying table: {error instanceof Error ? error.message : String(error)}</p>
   }
 }
 
