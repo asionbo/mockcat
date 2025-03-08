@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2, Copy, Check, Database, Code, Table2, FileText, KeyRound } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { LanguageSelector } from "@/app/components/LanguageSelector"
+import { useLanguage } from "@/app/lib/i18n/LanguageContext"
 
 export default function Home() {
   const [tableStructure, setTableStructure] = useState("")
@@ -21,12 +23,13 @@ export default function Home() {
   const [sqlCopied, setSqlCopied] = useState(false)
   const [inputFormat, setInputFormat] = useState("simple")
   const { toast } = useToast()
+  const { t } = useLanguage()
 
   const generateMockData = async () => {
     if (!tableStructure.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter a table structure",
+        title: t("errorTitle"),
+        description: t("errorEmptyStructure"),
         variant: "destructive",
       })
       return
@@ -47,19 +50,19 @@ export default function Home() {
       })
 
       if (!response.ok) {
-        throw new Error("Failed to generate mock data")
+        throw new Error(t("errorGeneration"))
       }
 
       const data = await response.json()
       setMockData(JSON.stringify(data.mockData, null, 2))
       toast({
-        title: "Success",
-        description: "Mock data generated successfully!",
+        title: t("successTitle"),
+        description: t("successMessage"),
       })
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to generate mock data",
+        title: t("errorTitle"),
+        description: error instanceof Error ? error.message : t("errorGeneration"),
         variant: "destructive",
       })
     } finally {
@@ -71,8 +74,8 @@ export default function Home() {
     navigator.clipboard.writeText(content)
     setCopied(true)
     toast({
-      title: "Copied!",
-      description: "Mock data copied to clipboard",
+      title: t("copiedTitle"),
+      description: t("copiedJson"),
     })
     setTimeout(() => setCopied(false), 2000)
   }
@@ -81,8 +84,8 @@ export default function Home() {
     navigator.clipboard.writeText(sql)
     setSqlCopied(true)
     toast({
-      title: "Copied!",
-      description: "SQL INSERT statements copied to clipboard",
+      title: t("copiedTitle"),
+      description: t("copiedSql"),
     })
     setTimeout(() => setSqlCopied(false), 2000)
   }
@@ -93,9 +96,12 @@ export default function Home() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Database className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold">MockCat</h1>
+            <h1 className="text-2xl font-bold">{t("title")}</h1>
           </div>
-          <p className="text-sm text-muted-foreground">Powered by Gemini AI</p>
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-muted-foreground">{t("poweredBy")}</p>
+            <LanguageSelector />
+          </div>
         </div>
       </header>
 
@@ -103,9 +109,9 @@ export default function Home() {
         <div className="grid gap-6 md:grid-cols-2">
           <Card className="md:col-span-2">
             <CardHeader>
-              <CardTitle className="text-xl">Table Structure to Mock Data Generator</CardTitle>
+              <CardTitle className="text-xl">{t("title")}</CardTitle>
               <CardDescription>
-                Enter your table structure and we'll generate realistic mock data for you
+                {t("description")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -123,7 +129,7 @@ export default function Home() {
                       className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                     >
                       <FileText className="mb-3 h-6 w-6" />
-                      <span className="text-sm font-medium">Simple Format</span>
+                      <span className="text-sm font-medium">{t("simpleFormat")}</span>
                     </Label>
                   </div>
                   <div>
@@ -133,19 +139,19 @@ export default function Home() {
                       className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                     >
                       <KeyRound className="mb-3 h-6 w-6" />
-                      <span className="text-sm font-medium">SQL CREATE TABLE</span>
+                      <span className="text-sm font-medium">{t("sqlFormat")}</span>
                     </Label>
                   </div>
                 </RadioGroup>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="tableStructure">Table Structure</Label>
+                  <Label htmlFor="tableStructure">{t("tableStructure")}</Label>
                   <Textarea
                     id="tableStructure"
                     placeholder={
                       inputFormat === "simple"
-                        ? "Enter your table structure (e.g., id: number, name: string, email: string, age: number)"
-                        : "Enter SQL CREATE TABLE statement (e.g., CREATE TABLE users (...))"
+                        ? t("inputPlaceholderSimple")
+                        : t("inputPlaceholderSQL")
                     }
                     className="min-h-[200px] font-mono text-sm"
                     value={tableStructure}
@@ -153,12 +159,12 @@ export default function Home() {
                   />
                   <p className="text-sm text-muted-foreground">
                     {inputFormat === "simple"
-                      ? "Format: columnName: dataType, columnName: dataType, ..."
-                      : "Format: CREATE TABLE tableName (column1 dataType, column2 dataType, ...)"}
+                      ? t("formatHintSimple")
+                      : t("formatHintSQL")}
                   </p>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="recordCount">Number of Records</Label>
+                  <Label htmlFor="recordCount">{t("recordCount")}</Label>
                   <Input
                     id="recordCount"
                     type="number"
@@ -175,10 +181,10 @@ export default function Home() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
+                    {t("generating")}
                   </>
                 ) : (
-                  "Generate Mock Data"
+                  t("generateButton")
                 )}
               </Button>
             </CardFooter>
@@ -188,8 +194,8 @@ export default function Home() {
             <Card className="md:col-span-2">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle className="text-xl">Generated Mock Data</CardTitle>
-                  <CardDescription>Your mock data is ready to use</CardDescription>
+                  <CardTitle className="text-xl">{t("generatedDataTitle")}</CardTitle>
+                  <CardDescription>{t("generatedDataDesc")}</CardDescription>
                 </div>
               </CardHeader>
               <CardContent>
@@ -242,16 +248,16 @@ export default function Home() {
 
       <footer className="container mx-auto py-6 border-t">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} MockCat. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">{t("footer")}</p>
           <div className="flex items-center gap-4">
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
-              About
+              {t("about")}
             </a>
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
-              Documentation
+              {t("documentation")}
             </a>
             <a href="https://github.com/asionbo/mockcat" className="text-sm text-muted-foreground hover:text-foreground">
-              GitHub
+              {t("github")}
             </a>
           </div>
         </div>
@@ -267,10 +273,12 @@ interface JsonTableProps {
 }
 
 function JsonTable({ data }: JsonTableProps) {
+  const { t } = useLanguage();
+  
   try {
     const jsonData = typeof data === "string" ? JSON.parse(data) : data
     if (!Array.isArray(jsonData) || jsonData.length === 0) {
-      return <p>No data to display</p>
+      return <p>{t("noData")}</p>
     }
 
     const columns = Object.keys(jsonData[0])
@@ -302,11 +310,11 @@ function JsonTable({ data }: JsonTableProps) {
       </div>
     )
   } catch (error) {
-    return <p>Error displaying table: {error instanceof Error ? error.message : String(error)}</p>
+    return <p>{t("errorDisplayTable")} {error instanceof Error ? error.message : String(error)}</p>
   }
 }
 
-// Add the SqlInsertStatements component
+// SqlInsertStatements component
 interface SqlInsertStatementsProps {
   data: string | unknown;
   onCopy?: (sql: string) => void;
@@ -314,10 +322,12 @@ interface SqlInsertStatementsProps {
 }
 
 function SqlInsertStatements({ data, onCopy, copied }: SqlInsertStatementsProps) {
+  const { t } = useLanguage();
+  
   try {
     const jsonData = typeof data === "string" ? JSON.parse(data) : data
     if (!Array.isArray(jsonData) || jsonData.length === 0) {
-      return <p>No data to display</p>
+      return <p>{t("noData")}</p>
     }
 
     // Extract table name from the structure or use a default
@@ -353,7 +363,7 @@ function SqlInsertStatements({ data, onCopy, copied }: SqlInsertStatementsProps)
       </div>
     )
   } catch (error) {
-    return <p>Error generating SQL statements: {error instanceof Error ? error.message : String(error)}</p>
+    return <p>{t("errorSqlGeneration")} {error instanceof Error ? error.message : String(error)}</p>
   }
 }
 
