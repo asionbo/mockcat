@@ -2,6 +2,7 @@ export type Language = 'en' | 'zh';
 
 export type TranslationKeys = {
   title: string;
+    slogan: string;
   poweredBy: string;
   description: string;
   tableStructure: string;
@@ -38,6 +39,7 @@ export type TranslationKeys = {
 export const translations: Record<Language, TranslationKeys> = {
   en: {
     title: 'MockCat',
+    slogan: "Mock Data Generator",
     poweredBy: 'Powered by Gemini AI',
     description: 'Enter your table structure and we\'ll generate realistic mock data for you',
     tableStructure: 'Table Structure',
@@ -72,6 +74,7 @@ export const translations: Record<Language, TranslationKeys> = {
   },
   zh: {
     title: 'MockCat',
+    slogan: "模拟数据生成器",
     poweredBy: '由 Gemini AI 提供支持',
     description: '输入您的表格结构，我们将为您生成逼真的模拟数据',
     tableStructure: '表格结构',

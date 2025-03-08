@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, Copy, Check, Database, Code, Table2, FileText, KeyRound } from "lucide-react"
+import { Loader2, Copy, Check, Database, Code, Table2, FileText, KeyRound, Github } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { LanguageSelector } from "@/app/components/LanguageSelector"
 import { useLanguage } from "@/app/lib/i18n/LanguageContext"
@@ -94,12 +94,25 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <header className="container mx-auto py-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Database className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold text-primary">{t("title")}</h1>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <Database className="h-6 w-6 text-primary" />
+              <h1 className="text-2xl font-bold text-primary">{t("title")}</h1>
+            </div>
+            <p className="text-sm text-muted-foreground ml-8 italic mt-1">
+              {t("slogan") || "Generate realistic mock data in seconds"}
+            </p>
           </div>
           <div className="flex items-center gap-4">
-            <p className="text-sm text-muted-foreground hidden sm:block">{t("poweredBy")}</p>
+            <a 
+              href="https://github.com/asionbo/mockcat" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="p-2 rounded-full hover:bg-muted/50 transition-colors"
+              title="GitHub"
+            >
+              <Github className="h-5 w-5" />
+            </a>
             <LanguageSelector />
           </div>
         </div>
@@ -257,19 +270,9 @@ export default function Home() {
       </main>
 
       <footer className="container mx-auto py-6 border-t mt-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="flex justify-between items-center">
           <p className="text-sm text-muted-foreground">{t("footer")}</p>
-          <div className="flex items-center gap-4">
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              {t("about")}
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              {t("documentation")}
-            </a>
-            <a href="https://github.com/asionbo/mockcat" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              {t("github")}
-            </a>
-          </div>
+          <p className="text-sm text-muted-foreground">{t("poweredBy")}</p>
         </div>
       </footer>
       <Toaster />
