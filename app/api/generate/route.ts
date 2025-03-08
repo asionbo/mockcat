@@ -67,9 +67,10 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ mockData: jsonData })
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error generating mock data:", error)
-    return NextResponse.json({ error: error.message || "Failed to generate mock data" }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : "Failed to generate mock data"
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }
 

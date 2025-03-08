@@ -18,6 +18,7 @@ export default function Home() {
   const [mockData, setMockData] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [sqlCopied, setSqlCopied] = useState(false)
   const [inputFormat, setInputFormat] = useState("simple")
   const { toast } = useToast()
 
@@ -66,14 +67,24 @@ export default function Home() {
     }
   }
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(mockData)
+  const copyToClipboard = (content: string) => {
+    navigator.clipboard.writeText(content)
     setCopied(true)
     toast({
       title: "Copied!",
       description: "Mock data copied to clipboard",
     })
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const copySqlToClipboard = (sql: string) => {
+    navigator.clipboard.writeText(sql)
+    setSqlCopied(true)
+    toast({
+      title: "Copied!",
+      description: "SQL INSERT statements copied to clipboard",
+    })
+    setTimeout(() => setSqlCopied(false), 2000)
   }
 
   return (
@@ -180,9 +191,6 @@ export default function Home() {
                   <CardTitle className="text-xl">Generated Mock Data</CardTitle>
                   <CardDescription>Your mock data is ready to use</CardDescription>
                 </div>
-                <Button variant="outline" size="icon" onClick={copyToClipboard}>
-                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                </Button>
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="json">
@@ -195,13 +203,34 @@ export default function Home() {
                       <Table2 className="h-4 w-4" />
                       Table
                     </TabsTrigger>
+                    <TabsTrigger value="sql" className="flex items-center gap-1">
+                      <Database className="h-4 w-4" />
+                      SQL INSERT
+                    </TabsTrigger>
                   </TabsList>
                   <TabsContent value="json">
-                    <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm">{mockData}</pre>
+                    <div className="relative">
+                      <Button 
+                        variant="outline" 
+                        size="icon" 
+                        className="absolute top-2 right-2 z-10" 
+                        onClick={() => copyToClipboard(mockData)}
+                      >
+                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                      </Button>
+                      <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm">
+                        {mockData}
+                      </pre>
+                    </div>
                   </TabsContent>
                   <TabsContent value="table">
                     <div className="overflow-auto max-h-[500px]">
                       <JsonTable data={mockData} />
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="sql">
+                    <div className="overflow-auto max-h-[500px]">
+                      <SqlInsertStatements data={mockData} onCopy={copySqlToClipboard} copied={sqlCopied} />
                     </div>
                   </TabsContent>
                 </Tabs>
@@ -274,6 +303,57 @@ function JsonTable({ data }: JsonTableProps) {
     )
   } catch (error) {
     return <p>Error displaying table: {error instanceof Error ? error.message : String(error)}</p>
+  }
+}
+
+// Add the SqlInsertStatements component
+interface SqlInsertStatementsProps {
+  data: string | unknown;
+  onCopy?: (sql: string) => void;
+  copied?: boolean;
+}
+
+function SqlInsertStatements({ data, onCopy, copied }: SqlInsertStatementsProps) {
+  try {
+    const jsonData = typeof data === "string" ? JSON.parse(data) : data
+    if (!Array.isArray(jsonData) || jsonData.length === 0) {
+      return <p>No data to display</p>
+    }
+
+    // Extract table name from the structure or use a default
+    const tableName = "table_name"
+    
+    const sqlStatements = jsonData.map(row => {
+      const columns = Object.keys(row).join(", ")
+      const values = Object.values(row).map(value => {
+        if (value === null) return 'NULL'
+        if (typeof value === 'string') return `'${value.replace(/'/g, "''")}'`
+        if (typeof value === 'object') return `'${JSON.stringify(value).replace(/'/g, "''")}'`
+        return value
+      }).join(", ")
+      
+      return `INSERT INTO ${tableName} (${columns}) VALUES (${values});`
+    }).join('\n')
+
+    return (
+      <div className="relative">
+        {onCopy && (
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="absolute top-2 right-2 z-10" 
+            onClick={() => onCopy(sqlStatements)}
+          >
+            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          </Button>
+        )}
+        <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm">
+          {sqlStatements}
+        </pre>
+      </div>
+    )
+  } catch (error) {
+    return <p>Error generating SQL statements: {error instanceof Error ? error.message : String(error)}</p>
   }
 }
 
