@@ -24,6 +24,9 @@ export default function Home() {
   const [inputFormat, setInputFormat] = useState("simple")
   const { toast } = useToast()
   const { t, language } = useLanguage()  // Extract language in addition to t
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [progressCount, setProgressCount] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
 
   const generateMockData = async () => {
     if (!tableStructure.trim()) {
@@ -35,7 +38,14 @@ export default function Home() {
       return
     }
 
+    // Clear any existing mock data before starting new generation
+    setMockData("")
+    
     setIsLoading(true)
+    setIsGenerating(true)
+    setProgressCount(0)
+    setTotalCount(recordCount)
+    
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -55,11 +65,25 @@ export default function Home() {
       }
 
       const data = await response.json()
+      
+      if (data.error) {
+        throw new Error(data.error)
+      }
+      
       setMockData(JSON.stringify(data.mockData, null, 2))
-      toast({
-        title: t("successTitle"),
-        description: t("successMessage"),
-      })
+      
+      // Show additional information if not all records were generated
+      if (data.generatedCount < data.requestedCount) {
+        toast({
+          title: t("partialSuccessTitle"),
+          description: t("partialSuccessMessage").replace('{generated}', data.generatedCount),
+        })
+      } else {
+        toast({
+          title: t("successTitle"),
+          description: t("successMessage"),
+        })
+      }
     } catch (error) {
       toast({
         title: t("errorTitle"),
@@ -68,6 +92,7 @@ export default function Home() {
       })
     } finally {
       setIsLoading(false)
+      setIsGenerating(false)
     }
   }
 
@@ -201,12 +226,19 @@ export default function Home() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t("generating")}
+                    {isGenerating ? 
+                      `${t("generating")} ${progressCount > 0 ? `(${progressCount}/${totalCount})` : ''}` : 
+                      t("generating")}
                   </>
                 ) : (
                   t("generateButton")
                 )}
               </Button>
+              {recordCount > 50 && (
+                <p className="ml-4 text-sm text-muted-foreground">
+                  {t("largeDatasetWarning")}
+                </p>
+              )}
             </CardFooter>
           </Card>
 
