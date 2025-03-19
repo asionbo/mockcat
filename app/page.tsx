@@ -23,7 +23,7 @@ export default function Home() {
   const [sqlCopied, setSqlCopied] = useState(false)
   const [inputFormat, setInputFormat] = useState("simple")
   const { toast } = useToast()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()  // Extract language in addition to t
 
   const generateMockData = async () => {
     if (!tableStructure.trim()) {
@@ -46,6 +46,7 @@ export default function Home() {
           tableStructure,
           recordCount,
           inputFormat,
+          language, // Pass current language to the API
         }),
       })
 

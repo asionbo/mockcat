@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" }) // Note: Changed to "gemini-pro" as "gemini-2.0-flash" might not be available
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
 
-    const { tableStructure, recordCount } = await req.json()
+    const { tableStructure, recordCount, inputFormat, language } = await req.json()
 
     if (!tableStructure) {
       return NextResponse.json({ error: "Table structure is required" }, { status: 400 })
@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
 
     const count = recordCount || 5
     const sanitizedStructure = sanitizeInput(tableStructure)
+    const userLanguage = language || "en" // Default to English if language is not provided
 
     const prompt = `
       You are an AI assistant specialized in understanding database schemas and generating mock data.
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest) {
       - For numeric fields, generate appropriate numeric values.
       - If the table structure includes any comments or constraints (e.g., specific formats, value ranges, or predefined options), adhere to those in the generated data.
       - For any fields that might represent names, emails, or other personal information, use realistic but obviously fake data.
+      - IMPORTANT: Generate all text content (names, addresses, descriptions, etc.) in the "${userLanguage}" language. If the language is "zh-CN", use Chinese names, addresses and text. If the language is "en", use English content.
 
       Return ONLY the JSON array of mock data, without any additional explanation, markdown formatting, or code blocks.
     `
