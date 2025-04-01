@@ -37,6 +37,8 @@ export type TranslationKeys = {
   partialSuccessTitle: string;
   partialSuccessMessage: string;
   largeDatasetWarning: string;
+  copied: string;
+  copy: string;
 };
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -76,7 +78,9 @@ export const translations: Record<Language, TranslationKeys> = {
     github: 'GitHub',
     partialSuccessTitle: "Partial Data Generated",
   partialSuccessMessage: "{generated} records were successfully generated. Some records couldn't be created.",
-  largeDatasetWarning: "Generating large datasets may take longer and could be less reliable for complex structures."
+  largeDatasetWarning: "Generating large datasets may take longer and could be less reliable for complex structures.",
+  copied: "Copied",
+  copy: "Copy",
 
   },
   zh: {
@@ -115,6 +119,8 @@ export const translations: Record<Language, TranslationKeys> = {
     github: 'GitHub',
     partialSuccessTitle: "部分数据已生成",
     partialSuccessMessage: "{generated} 条记录已成功生成。一些记录无法创建。",
-    largeDatasetWarning: "生成大型数据集可能需要更长时间，对于复杂结构可能不太可靠。"
+    largeDatasetWarning: "生成大型数据集可能需要更长时间，对于复杂结构可能不太可靠。",
+    copied: "已复制",
+    copy: "复制",
   }
 };

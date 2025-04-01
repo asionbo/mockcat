@@ -202,43 +202,50 @@ export default function Home() {
                       : t("formatHintSQL")}
                   </p>
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="recordCount" className="text-sm font-medium">{t("recordCount")}</Label>
-                  <Input
-                    id="recordCount"
-                    type="number"
-                    min="1"
-                    max="100"
-                    value={recordCount}
-                    onChange={(e) => setRecordCount(Number.parseInt(e.target.value))}
-                    className="max-w-[200px] border-2 focus-visible:ring-primary"
-                  />
-                </div>
               </div>
             </CardContent>
-            <CardFooter className="bg-muted/30">
-              <Button 
-                onClick={generateMockData} 
-                disabled={isLoading} 
-                className="w-full md:w-auto md:px-8 transition-all shadow hover:shadow-md"
-                size="lg"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {isGenerating ? 
-                      `${t("generating")} ${progressCount > 0 ? `(${progressCount}/${totalCount})` : ''}` : 
-                      t("generating")}
-                  </>
-                ) : (
-                  t("generateButton")
+            <CardFooter className="bg-muted/30 py-6">
+              <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-end gap-4 w-full sm:w-auto">
+                  <div>
+                    <Label htmlFor="recordCount" className="text-sm font-medium mb-2 block">{t("recordCount")}</Label>
+                    <Input
+                      id="recordCount"
+                      type="number"
+                      min="1"
+                      max="100"
+                      value={recordCount}
+                      onChange={(e) => setRecordCount(Number.parseInt(e.target.value))}
+                      className="w-[100px] border-2 focus-visible:ring-primary h-12"
+                    />
+                  </div>
+                  <Button 
+                    onClick={generateMockData} 
+                    disabled={isLoading} 
+                    className="md:px-12 transition-all shadow-md hover:shadow-xl bg-primary hover:bg-primary/90 text-lg py-6 font-medium ml-2 flex-grow sm:flex-grow-0"
+                    size="lg"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        {isGenerating ? 
+                          `${t("generating")} ${progressCount > 0 ? `(${progressCount}/${totalCount})` : ''}` : 
+                          t("generating")}
+                      </>
+                    ) : (
+                      <>
+                        <Database className="mr-2 h-5 w-5" />
+                        {t("generateButton")}
+                      </>
+                    )}
+                  </Button>
+                </div>
+                {recordCount > 50 && (
+                  <p className="text-sm text-muted-foreground mt-2 sm:mt-0">
+                    {t("largeDatasetWarning")}
+                  </p>
                 )}
-              </Button>
-              {recordCount > 50 && (
-                <p className="ml-4 text-sm text-muted-foreground">
-                  {t("largeDatasetWarning")}
-                </p>
-              )}
+              </div>
             </CardFooter>
           </Card>
 
@@ -270,13 +277,14 @@ export default function Home() {
                     <div className="relative">
                       <Button 
                         variant="outline" 
-                        size="icon" 
-                        className="absolute top-2 right-2 z-10 bg-muted/80 hover:bg-accent transition-colors border-2" 
+                        size="sm"
+                        className="absolute top-3 right-3 z-10 bg-background/80 hover:bg-accent transition-colors border shadow-sm flex items-center gap-1" 
                         onClick={() => copyToClipboard(mockData)}
                       >
                         {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                        {copied ? t("copied") : t("copy")}
                       </Button>
-                      <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm border-2">
+                      <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm border-2 pt-12">
                         {mockData}
                       </pre>
                     </div>
@@ -303,7 +311,7 @@ export default function Home() {
       </main>
 
       <footer className="container mx-auto py-6 border-t mt-6">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
           <p className="text-sm text-muted-foreground">{t("footer")}</p>
           <p className="text-sm text-muted-foreground">{t("poweredBy")}</p>
         </div>
@@ -406,13 +414,14 @@ function SqlInsertStatements({ data, onCopy, copied }: SqlInsertStatementsProps)
       <div className="relative">
         <Button 
           variant="outline" 
-          size="icon" 
-          className="absolute top-2 right-2 z-10 bg-muted/80 hover:bg-accent transition-colors border-2 shadow-sm" 
+          size="sm"
+          className="absolute top-3 right-3 z-10 bg-background/80 hover:bg-accent transition-colors border shadow-sm flex items-center gap-1" 
           onClick={() => onCopy && onCopy(sqlStatements)}
         >
           {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+          {copied ? t("copied") : t("copy")}
         </Button>
-        <div className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm font-mono border-0">
+        <div className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm font-mono border-0 pt-12">
           <div dangerouslySetInnerHTML={{ __html: formattedSql }} />
         </div>
       </div>
