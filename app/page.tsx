@@ -23,7 +23,7 @@ export default function Home() {
   const [sqlCopied, setSqlCopied] = useState(false)
   const [inputFormat, setInputFormat] = useState("simple")
   const { toast } = useToast()
-  const { t, language } = useLanguage()  // Extract language in addition to t
+  const { t, language } = useLanguage()
   const [isGenerating, setIsGenerating] = useState(false)
   const [progressCount, setProgressCount] = useState(0)
   const [totalCount, setTotalCount] = useState(0)
@@ -38,14 +38,12 @@ export default function Home() {
       return
     }
 
-    // Clear any existing mock data before starting new generation
     setMockData("")
-    
     setIsLoading(true)
     setIsGenerating(true)
     setProgressCount(0)
     setTotalCount(recordCount)
-    
+
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -56,7 +54,7 @@ export default function Home() {
           tableStructure,
           recordCount,
           inputFormat,
-          language, // Pass current language to the API
+          language,
         }),
       })
 
@@ -65,14 +63,13 @@ export default function Home() {
       }
 
       const data = await response.json()
-      
+
       if (data.error) {
         throw new Error(data.error)
       }
-      
+
       setMockData(JSON.stringify(data.mockData, null, 2))
-      
-      // Show additional information if not all records were generated
+
       if (data.generatedCount < data.requestedCount) {
         toast({
           title: t("partialSuccessTitle"),
@@ -118,12 +115,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <header className="container mx-auto py-6">
+      <header className="container mx-auto py-8 px-4">
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <Database className="h-6 w-6 text-primary" />
-              <h1 className="text-2xl font-bold text-primary">{t("title")}</h1>
+              <Database className="h-7 w-7 text-primary" />
+              <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">{t("title")}</h1>
             </div>
             <p className="text-sm text-muted-foreground ml-8 italic mt-1">
               {t("slogan") || "Generate realistic mock data in seconds"}
@@ -134,7 +131,7 @@ export default function Home() {
               href="https://github.com/asionbo/mockcat" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="p-2 rounded-full hover:bg-muted/50 transition-colors"
+              className="p-2.5 rounded-full hover:bg-muted/70 transition-all hover:shadow-md"
               title="GitHub"
             >
               <Github className="h-5 w-5" />
@@ -144,41 +141,41 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="container mx-auto py-6">
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="md:col-span-2 border-2 shadow-lg">
-            <CardHeader className="bg-muted/30">
-              <CardTitle className="text-xl text-primary">{t("title")}</CardTitle>
-              <CardDescription>
+      <main className="container mx-auto py-6 px-4">
+        <div className="grid gap-8 md:grid-cols-2">
+          <Card className="md:col-span-2 border-2 shadow-xl bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+            <CardHeader className="bg-muted/40 border-b border-border/40">
+              <CardTitle className="text-2xl font-semibold text-primary">{t("title")}</CardTitle>
+              <CardDescription className="text-base">
                 {t("description")}
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-6">
-              <div className="grid gap-6">
+            <CardContent className="pt-8">
+              <div className="grid gap-8">
                 <RadioGroup
                   defaultValue="simple"
                   value={inputFormat}
                   onValueChange={setInputFormat}
-                  className="grid grid-cols-2 gap-4 sm:max-w-sm mx-auto"
+                  className="grid grid-cols-2 gap-6 sm:max-w-md mx-auto"
                 >
                   <div>
                     <RadioGroupItem value="simple" id="simple" className="peer sr-only" />
                     <Label
                       htmlFor="simple"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary transition-all"
+                      className="flex flex-col items-center justify-between rounded-xl border-2 border-muted bg-popover p-6 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-primary/5 transition-all hover:shadow-md"
                     >
-                      <FileText className="mb-3 h-6 w-6" />
-                      <span className="text-sm font-medium">{t("simpleFormat")}</span>
+                      <FileText className="mb-4 h-8 w-8" />
+                      <span className="text-base font-medium">{t("simpleFormat")}</span>
                     </Label>
                   </div>
                   <div>
                     <RadioGroupItem value="sql" id="sql" className="peer sr-only" />
                     <Label
                       htmlFor="sql"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary transition-all"
+                      className="flex flex-col items-center justify-between rounded-xl border-2 border-muted bg-popover p-6 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-primary/5 transition-all hover:shadow-md"
                     >
-                      <KeyRound className="mb-3 h-6 w-6" />
-                      <span className="text-sm font-medium">{t("sqlFormat")}</span>
+                      <KeyRound className="mb-4 h-8 w-8" />
+                      <span className="text-base font-medium">{t("sqlFormat")}</span>
                     </Label>
                   </div>
                 </RadioGroup>
@@ -192,7 +189,7 @@ export default function Home() {
                         ? t("inputPlaceholderSimple")
                         : t("inputPlaceholderSQL")
                     }
-                    className="min-h-[200px] font-mono text-sm border-2 focus-visible:ring-primary"
+                    className="min-h-[240px] font-mono text-sm border-2 rounded-xl focus-visible:ring-primary shadow-inner bg-white dark:bg-gray-950"
                     value={tableStructure}
                     onChange={(e) => setTableStructure(e.target.value)}
                   />
@@ -204,7 +201,7 @@ export default function Home() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="bg-muted/30 py-6">
+            <CardFooter className="bg-muted/40 py-8 border-t border-border/40">
               <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-end gap-4 w-full sm:w-auto">
                   <div>
@@ -216,13 +213,13 @@ export default function Home() {
                       max="100"
                       value={recordCount}
                       onChange={(e) => setRecordCount(Number.parseInt(e.target.value))}
-                      className="w-[100px] border-2 focus-visible:ring-primary h-12"
+                      className="w-[120px] border-2 focus-visible:ring-primary h-12 rounded-lg shadow-sm bg-white dark:bg-gray-950"
                     />
                   </div>
                   <Button 
                     onClick={generateMockData} 
                     disabled={isLoading} 
-                    className="md:px-12 transition-all shadow-md hover:shadow-xl bg-primary hover:bg-primary/90 text-lg py-6 font-medium ml-2 flex-grow sm:flex-grow-0"
+                    className="md:px-12 transition-all shadow-md hover:shadow-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-lg py-6 font-medium ml-2 flex-grow sm:flex-grow-0 rounded-xl animate-pulse-slow disabled:animate-none"
                     size="lg"
                   >
                     {isLoading ? (
@@ -241,7 +238,7 @@ export default function Home() {
                   </Button>
                 </div>
                 {recordCount > 50 && (
-                  <p className="text-sm text-muted-foreground mt-2 sm:mt-0">
+                  <p className="text-sm text-yellow-700 dark:text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30 px-4 py-2 rounded-lg border border-yellow-200 dark:border-yellow-800 mt-2 sm:mt-0">
                     {t("largeDatasetWarning")}
                   </p>
                 )}
@@ -250,25 +247,25 @@ export default function Home() {
           </Card>
 
           {mockData && (
-            <Card className="md:col-span-2 border-2 shadow-lg">
-              <CardHeader className="flex flex-row items-center justify-between bg-muted/30">
+            <Card className="md:col-span-2 border-2 shadow-xl bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+              <CardHeader className="flex flex-row items-center justify-between bg-muted/40 border-b border-border/40">
                 <div>
-                  <CardTitle className="text-xl text-primary">{t("generatedDataTitle")}</CardTitle>
-                  <CardDescription>{t("generatedDataDesc")}</CardDescription>
+                  <CardTitle className="text-2xl font-semibold text-primary">{t("generatedDataTitle")}</CardTitle>
+                  <CardDescription className="text-base">{t("generatedDataDesc")}</CardDescription>
                 </div>
               </CardHeader>
-              <CardContent className="pt-6">
-                <Tabs defaultValue="json">
-                  <TabsList className="mb-4 p-1">
-                    <TabsTrigger value="json" className="flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <CardContent className="pt-8">
+                <Tabs defaultValue="json" className="w-full">
+                  <TabsList className="mb-6 p-1 w-full justify-start gap-2 bg-muted/30 rounded-lg">
+                    <TabsTrigger value="json" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-5 py-2.5 rounded-md transition-all">
                       <Code className="h-4 w-4" />
                       JSON
                     </TabsTrigger>
-                    <TabsTrigger value="table" className="flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <TabsTrigger value="table" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-5 py-2.5 rounded-md transition-all">
                       <Table2 className="h-4 w-4" />
                       Table
                     </TabsTrigger>
-                    <TabsTrigger value="sql" className="flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <TabsTrigger value="sql" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-5 py-2.5 rounded-md transition-all">
                       <Database className="h-4 w-4" />
                       SQL INSERT
                     </TabsTrigger>
@@ -278,24 +275,24 @@ export default function Home() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="absolute top-3 right-3 z-10 bg-background/80 hover:bg-accent transition-colors border shadow-sm flex items-center gap-1" 
+                        className="absolute top-3 right-3 z-10 bg-background/90 hover:bg-accent transition-colors border shadow-sm flex items-center gap-1 rounded-lg" 
                         onClick={() => copyToClipboard(mockData)}
                       >
                         {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                         {copied ? t("copied") : t("copy")}
                       </Button>
-                      <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm border-2 pt-12">
+                      <pre className="bg-muted/30 p-4 rounded-lg overflow-auto max-h-[600px] text-sm border-2 pt-12 shadow-inner font-mono">
                         {mockData}
                       </pre>
                     </div>
                   </TabsContent>
                   <TabsContent value="table">
-                    <div className="overflow-auto max-h-[500px] border-2 rounded-md">
+                    <div className="overflow-auto max-h-[600px] border-2 rounded-lg shadow-inner">
                       <JsonTable data={mockData} />
                     </div>
                   </TabsContent>
                   <TabsContent value="sql">
-                    <div className="relative overflow-hidden rounded-md border-2">
+                    <div className="relative overflow-hidden rounded-lg border-2 shadow-inner">
                       <SqlInsertStatements 
                         data={mockData} 
                         onCopy={copySqlToClipboard} 
@@ -310,7 +307,7 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="container mx-auto py-6 border-t mt-6">
+      <footer className="container mx-auto py-8 border-t mt-10 px-4">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
           <p className="text-sm text-muted-foreground">{t("footer")}</p>
           <p className="text-sm text-muted-foreground">{t("poweredBy")}</p>
@@ -321,7 +318,6 @@ export default function Home() {
   )
 }
 
-// Define an interface for the JsonTable props
 interface JsonTableProps {
   data: string | unknown;
 }
@@ -332,7 +328,7 @@ function JsonTable({ data }: JsonTableProps) {
   try {
     const jsonData = typeof data === "string" ? JSON.parse(data) : data
     if (!Array.isArray(jsonData) || jsonData.length === 0) {
-      return <p className="p-4 text-center text-muted-foreground">{t("noData")}</p>
+      return <p className="p-6 text-center text-muted-foreground">{t("noData")}</p>
     }
 
     const columns = Object.keys(jsonData[0])
@@ -343,7 +339,7 @@ function JsonTable({ data }: JsonTableProps) {
           <thead>
             <tr className="border-b bg-muted/70">
               {columns.map((column) => (
-                <th key={column} className="p-2 text-left font-medium text-sm">
+                <th key={column} className="p-3 text-left font-semibold text-sm sticky top-0 bg-muted/90 backdrop-blur-sm">
                   {column}
                 </th>
               ))}
@@ -353,12 +349,12 @@ function JsonTable({ data }: JsonTableProps) {
             {jsonData.map((row, i) => (
               <tr 
                 key={i} 
-                className={`border-b last:border-0 hover:bg-muted/30 transition-colors ${
-                  i % 2 === 0 ? "bg-white dark:bg-gray-950" : "bg-muted/20"
+                className={`border-b last:border-0 hover:bg-muted/40 transition-colors ${
+                  i % 2 === 0 ? "bg-white/70 dark:bg-gray-950/70" : "bg-muted/20"
                 }`}
               >
                 {columns.map((column) => (
-                  <td key={`${i}-${column}`} className="p-2 text-sm">
+                  <td key={`${i}-${column}`} className="p-3 text-sm">
                     {typeof row[column] === "object" ? JSON.stringify(row[column]) : String(row[column])}
                   </td>
                 ))}
@@ -369,11 +365,10 @@ function JsonTable({ data }: JsonTableProps) {
       </div>
     )
   } catch (error) {
-    return <p className="p-4 text-center text-destructive">{t("errorDisplayTable")} {error instanceof Error ? error.message : String(error)}</p>
+    return <p className="p-6 text-center text-destructive bg-destructive/10 rounded-lg">{t("errorDisplayTable")} {error instanceof Error ? error.message : String(error)}</p>
   }
 }
 
-// SqlInsertStatements component
 interface SqlInsertStatementsProps {
   data: string | unknown;
   onCopy?: (sql: string) => void;
@@ -386,10 +381,9 @@ function SqlInsertStatements({ data, onCopy, copied }: SqlInsertStatementsProps)
   try {
     const jsonData = typeof data === "string" ? JSON.parse(data) : data
     if (!Array.isArray(jsonData) || jsonData.length === 0) {
-      return <p className="p-4 text-center text-muted-foreground">{t("noData")}</p>
+      return <p className="p-6 text-center text-muted-foreground">{t("noData")}</p>
     }
 
-    // Extract table name from the structure or use a default
     const tableName = "table_name"
     
     const sqlStatements = jsonData.map(row => {
@@ -404,7 +398,6 @@ function SqlInsertStatements({ data, onCopy, copied }: SqlInsertStatementsProps)
       return `INSERT INTO ${tableName} (${columns}) VALUES (${values});`
     }).join('\n')
 
-    // Highlight SQL keywords with colored spans
     const formattedSql = sqlStatements.replace(
       /(INSERT INTO|VALUES)/g,
       '<span class="text-primary font-bold">$1</span>'
@@ -415,19 +408,19 @@ function SqlInsertStatements({ data, onCopy, copied }: SqlInsertStatementsProps)
         <Button 
           variant="outline" 
           size="sm"
-          className="absolute top-3 right-3 z-10 bg-background/80 hover:bg-accent transition-colors border shadow-sm flex items-center gap-1" 
+          className="absolute top-3 right-3 z-10 bg-background/90 hover:bg-accent transition-colors border shadow-sm flex items-center gap-1 rounded-lg" 
           onClick={() => onCopy && onCopy(sqlStatements)}
         >
           {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
           {copied ? t("copied") : t("copy")}
         </Button>
-        <div className="bg-muted p-4 rounded-md overflow-auto max-h-[500px] text-sm font-mono border-0 pt-12">
+        <div className="bg-muted/30 p-4 rounded-md overflow-auto max-h-[600px] text-sm font-mono border-0 pt-12 shadow-inner">
           <div dangerouslySetInnerHTML={{ __html: formattedSql }} />
         </div>
       </div>
     );
   } catch (error) {
-    return <p className="p-4 text-center text-destructive">{t("errorSqlGeneration")} {error instanceof Error ? error.message : String(error)}</p>
+    return <p className="p-6 text-center text-destructive bg-destructive/10 rounded-lg">{t("errorSqlGeneration")} {error instanceof Error ? error.message : String(error)}</p>
   }
 }
 
